@@ -36,7 +36,17 @@ const data = [
   },
 ];
 
+app.get("/info", (req, res) => {
+  console.log("GET request for info");
+  const length = data.length;
+  res.send(`
+        <p>Phonebook has ${length} people.<p/>
+        <p>${Date()}<p/>
+    `);
+});
+
 app.get("/api/persons", (req, res) => {
+  console.log("GET request for persons");
   res.send(JSON.stringify(data));
 });
 
