@@ -36,6 +36,14 @@ let data = [
   },
 ];
 
+////// middleware //////
+const getRandomId = () => {
+  const id = Math.floor(Math.random() * 100000);
+  return id;
+};
+
+////// routing //////
+
 app.get("/info", (req, res) => {
   console.log("GET request for info");
   const length = data.length;
@@ -48,6 +56,40 @@ app.get("/info", (req, res) => {
 app.get("/api/persons", (req, res) => {
   console.log("GET request for persons");
   res.send(JSON.stringify(data));
+});
+
+app.post("/api/persons", (req, res) => {
+  console.log("POST request for /api/persons");
+  // get the body
+  const body = req.body;
+  // validate the body
+  if (body.name && body.number) {
+    // name and number are present, check if name is in data
+    const duplicate = data.find(
+      (person) => person.name.toLowerCase() === body.name.toLowerCase()
+    );
+    if (duplicate) {
+      // name already exists in phonebook, throw error
+      return res.status(400).json({
+        error: "name exists in the phonebook",
+      });
+    }
+  } else {
+    // name or number is empty, throw error
+    return res.status(400).json({
+      error: "name or number is missing",
+    });
+  }
+  // create a person object with body.name and body.number
+  const person = {
+    name: body.name,
+    number: body.number,
+    id: getRandomId(),
+  };
+  // add new person to data
+  data = data.concat(person);
+  // return the newly added person
+  res.send(person);
 });
 
 app.get("/api/persons/:id", (req, res) => {
