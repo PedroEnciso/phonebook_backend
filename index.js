@@ -50,6 +50,19 @@ app.get("/api/persons", (req, res) => {
   res.send(JSON.stringify(data));
 });
 
+app.get("/api/persons/:id", (req, res) => {
+  console.log(`GET request for person ${req.params.id}`);
+
+  const id = req.params.id;
+  const target = data.find((person) => person.id.toString() === id);
+
+  if (target) {
+    res.send(JSON.stringify(target));
+  } else {
+    res.status(404).end();
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
 });
