@@ -1,7 +1,23 @@
 const express = require("express");
+const morgan = require("morgan");
+
 const app = express();
-app.use(express.json());
 const PORT = 3001;
+
+// morgan token to show the body of a POST request
+morgan.token("post-body", (req) => {
+  if (req.method === "POST") {
+    const person = {
+      name: req.body.name,
+      number: req.body.number,
+    };
+    return JSON.stringify(person);
+  }
+});
+
+////// MIDDLEWARE ///////
+app.use(express.json());
+app.use(morgan(":method :url :status :response-time ms :post-body"));
 
 let data = [
   {
@@ -36,16 +52,14 @@ let data = [
   },
 ];
 
-////// middleware //////
+// generate a random id
 const getRandomId = () => {
   const id = Math.floor(Math.random() * 100000);
   return id;
 };
 
-////// routing //////
-
+////// ROUTING //////
 app.get("/info", (req, res) => {
-  console.log("GET request for info");
   const length = data.length;
   res.send(`
         <p>Phonebook has ${length} people.<p/>
@@ -54,12 +68,10 @@ app.get("/info", (req, res) => {
 });
 
 app.get("/api/persons", (req, res) => {
-  console.log("GET request for persons");
   res.send(JSON.stringify(data));
 });
 
 app.post("/api/persons", (req, res) => {
-  console.log("POST request for /api/persons");
   // get the body
   const body = req.body;
   // validate the body
@@ -93,8 +105,6 @@ app.post("/api/persons", (req, res) => {
 });
 
 app.get("/api/persons/:id", (req, res) => {
-  console.log(`GET request for person ${req.params.id}`);
-
   const id = req.params.id;
   const target = data.find((person) => person.id.toString() === id);
 
@@ -106,8 +116,6 @@ app.get("/api/persons/:id", (req, res) => {
 });
 
 app.delete("/api/persons/:id", (req, res) => {
-  console.log(`DELETE request for person ${req.params.id}`);
-
   const id = req.params.id;
   data = data.filter((person) => person.id.toString() !== id);
 
