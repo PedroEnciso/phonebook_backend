@@ -1,9 +1,43 @@
 const express = require("express");
 const app = express();
+app.use(express.json());
 const PORT = 3001;
 
-app.get("/", (req, res) => {
-  res.send("Hello World!");
+const data = [
+  {
+    name: "poopoo",
+    number: "5555555555",
+    id: 1,
+  },
+  {
+    name: "Larry",
+    number: "6804949094",
+    id: 2,
+  },
+  {
+    name: "ped",
+    number: "7605252738",
+    id: 4,
+  },
+  {
+    name: "frank",
+    number: "2323490928",
+    id: 9,
+  },
+  {
+    name: "larry bird",
+    number: "4740958329",
+    id: 12,
+  },
+  {
+    name: "george",
+    number: "3204083959",
+    id: 15,
+  },
+];
+
+app.get("/api/persons", (req, res) => {
+  res.send(JSON.stringify(data));
 });
 
 app.listen(PORT, () => {
